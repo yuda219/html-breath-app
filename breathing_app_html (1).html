@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Breathing Exercise App</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #1e293b 0%, #7c3aed 50%, #1e293b 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            padding: 32px;
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .header {
+            margin-bottom: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+
+        h1 {
+            color: white;
+            font-size: 32px;
+            font-weight: bold;
+        }
+
+        .settings-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            padding: 8px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .settings-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .pattern-text {
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 32px;
+        }
+
+        .cycles {
+            margin-bottom: 24px;
+        }
+
+        .cycles-label {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+
+        .cycles-count {
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .circle-container {
+            position: relative;
+            height: 250px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 32px;
+        }
+
+        .circle {
+            position: absolute;
+            border-radius: 50%;
+            transition: all 1s ease-in-out;
+        }
+
+        .circle1 {
+            opacity: 0.3;
+        }
+
+        .circle2 {
+            opacity: 0.6;
+        }
+
+        .circle3 {
+            opacity: 1;
+        }
+
+        .circle-content {
+            position: relative;
+            z-index: 10;
+            color: white;
+        }
+
+        .phase-label {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .count {
+            font-size: 48px;
+            font-weight: bold;
+            font-family: 'Courier New', monospace;
+        }
+
+        .count-total {
+            font-size: 12px;
+            opacity: 0.7;
+            margin-top: 4px;
+        }
+
+        .instructions {
+            margin-bottom: 24px;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            font-size: 12px;
+        }
+
+        .instruction-item {
+            display: flex;
+            align-items: center;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .color-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 4px;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .control-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 24px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .control-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .control-btn:disabled {
+            opacity: 0.5;
+        }
+
+        .tips {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 12px;
+            line-height: 1.4;
+        }
+
+        .tips p {
+            margin-bottom: 4px;
+        }
+
+        /* Modal styles */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 24px;
+            width: 100%;
+            max-width: 400px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .modal-title {
+            color: white;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, 0.7);
+            cursor: pointer;
+            font-size: 24px;
+        }
+
+        .close-btn:hover {
+            color: white;
+        }
+
+        .presets {
+            margin-bottom: 24px;
+        }
+
+        .presets h3 {
+            color: white;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .preset-btn {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            padding: 12px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 8px;
+        }
+
+        .preset-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .custom-settings {
+            margin-bottom: 24px;
+        }
+
+        .custom-settings h3 {
+            color: white;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .input-group label {
+            display: block;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+
+        .input-group input {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .input-group input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .done-btn {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.3);
+            border: none;
+            color: white;
+            padding: 12px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 600;
+        }
+
+        .done-btn:hover {
+            background: rgba(255, 255, 255, 0.4);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        /* Color classes */
+        .bg-blue { background-color: #3b82f6; }
+        .bg-yellow { background-color: #eab308; }
+        .bg-green { background-color: #22c55e; }
+        .bg-gray { background-color: #6b7280; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Breathing Exercise</h1>
+            <button class="settings-btn" onclick="toggleSettings()">⚙️</button>
+        </div>
+        
+        <div class="pattern-text" id="patternText">4-2-6-2 Pattern</div>
+        
+        <div class="cycles">
+            <div class="cycles-label">Cycles Completed</div>
+            <div class="cycles-count" id="cyclesCount">0</div>
+        </div>
+        
+        <div class="circle-container">
+            <div class="circle circle1 bg-blue" id="circle1"></div>
+            <div class="circle circle2 bg-blue" id="circle2"></div>
+            <div class="circle circle3 bg-blue" id="circle3"></div>
+            
+            <div class="circle-content">
+                <div class="phase-label" id="phaseLabel">Inhale</div>
+                <div class="count" id="count">1</div>
+                <div class="count-total" id="countTotal">of 4</div>
+            </div>
+        </div>
+        
+        <div class="instructions">
+            <div class="instruction-item">
+                <div class="color-dot bg-blue"></div>
+                <span id="inhaleText">Inhale 4s</span>
+            </div>
+            <div class="instruction-item">
+                <div class="color-dot bg-yellow"></div>
+                <span id="holdText">Hold 2s</span>
+            </div>
+            <div class="instruction-item">
+                <div class="color-dot bg-green"></div>
+                <span id="exhaleText">Exhale 6s</span>
+            </div>
+            <div class="instruction-item">
+                <div class="color-dot bg-gray"></div>
+                <span id="pauseText">Pause 2s</span>
+            </div>
+        </div>
+        
+        <div class="controls">
+            <button class="control-btn" id="playBtn" onclick="toggleActive()">
+                <span id="playIcon">▶️</span>
+                <span id="playText">Start</span>
+            </button>
+            
+            <button class="control-btn" onclick="resetExercise()">
+                <span>🔄</span>
+                <span>Reset</span>
+            </button>
+        </div>
+        
+        <div class="tips">
+            <p>Find a comfortable position and breathe naturally through your nose.</p>
+            <p>The circle will expand on inhale and contract on exhale.</p>
+            <p>Your phone will vibrate when transitioning between phases.</p>
+        </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div class="modal hidden" id="settingsModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Settings</h2>
+                <button class="close-btn" onclick="toggleSettings()">×</button>
+            </div>
+            
+            <div class="presets">
+                <h3>Quick Presets</h3>
+                <button class="preset-btn" onclick="setPreset('4-7-8')">4-7-8 (Relaxing)</button>
+                <button class="preset-btn" onclick="setPreset('4-2-6-2')">4-2-6-2 (Balanced)</button>
+                <button class="preset-btn" onclick="setPreset('4-4-4-4')">4-4-4-4 (Equal)</button>
+            </div>
+            
+            <div class="custom-settings">
+                <h3>Custom Pattern</h3>
+                <div class="input-grid">
+                    <div class="input-group">
+                        <label>Inhale (sec)</label>
+                        <input type="number" id="inhaleInput" min="1" max="30" value="4" onchange="updateDuration('inhale', this.value)">
+                    </div>
+                    <div class="input-group">
+                        <label>Hold (sec)</label>
+                        <input type="number" id="holdInput" min="1" max="30" value="2" onchange="updateDuration('hold', this.value)">
+                    </div>
+                    <div class="input-group">
+                        <label>Exhale (sec)</label>
+                        <input type="number" id="exhaleInput" min="1" max="30" value="6" onchange="updateDuration('exhale', this.value)">
+                    </div>
+                    <div class="input-group">
+                        <label>Pause (sec)</label>
+                        <input type="number" id="pauseInput" min="1" max="30" value="2" onchange="updateDuration('pause', this.value)">
+                    </div>
+                </div>
+            </div>
+            
+            <button class="done-btn" onclick="toggleSettings()">Done</button>
+        </div>
+    </div>
+
+    <script>
+        let isActive = false;
+        let phase = 'inhale';
+        let count = 1;
+        let cycles = 0;
+        let interval = null;
+
+        let phaseDurations = {
+            inhale: 4,
+            hold: 2,
+            exhale: 6,
+            pause: 2
+        };
+
+        const phaseLabels = {
+            inhale: 'Inhale',
+            hold: 'Hold',
+            exhale: 'Exhale',
+            pause: 'Pause'
+        };
+
+        const phaseColors = {
+            inhale: 'bg-blue',
+            hold: 'bg-yellow',
+            exhale: 'bg-green',
+            pause: 'bg-gray'
+        };
+
+        function vibrate() {
+            if (navigator.vibrate) {
+                navigator.vibrate(100);
+            }
+        }
+
+        function updateDisplay() {
+            document.getElementById('phaseLabel').textContent = phaseLabels[phase];
+            document.getElementById('count').textContent = count;
+            document.getElementById('countTotal').textContent = `of ${phaseDurations[phase]}`;
+            document.getElementById('cyclesCount').textContent = cycles;
+            
+            // Update pattern text
+            document.getElementById('patternText').textContent = 
+                `${phaseDurations.inhale}-${phaseDurations.hold}-${phaseDurations.exhale}-${phaseDurations.pause} Pattern`;
+            
+            // Update instruction text
+            document.getElementById('inhaleText').textContent = `Inhale ${phaseDurations.inhale}s`;
+            document.getElementById('holdText').textContent = `Hold ${phaseDurations.hold}s`;
+            document.getElementById('exhaleText').textContent = `Exhale ${phaseDurations.exhale}s`;
+            document.getElementById('pauseText').textContent = `Pause ${phaseDurations.pause}s`;
+            
+            // Update circle colors
+            const circles = document.querySelectorAll('.circle');
+            circles.forEach(circle => {
+                circle.className = `circle ${circle.classList.contains('circle1') ? 'circle1' : circle.classList.contains('circle2') ? 'circle2' : 'circle3'} ${phaseColors[phase]}`;
+            });
+            
+            // Update circle sizes
+            const scale = getCircleScale();
+            document.getElementById('circle1').style.width = `${scale * 200}px`;
+            document.getElementById('circle1').style.height = `${scale * 200}px`;
+            document.getElementById('circle2').style.width = `${scale * 160}px`;
+            document.getElementById('circle2').style.height = `${scale * 160}px`;
+            document.getElementById('circle3').style.width = `${scale * 120}px`;
+            document.getElementById('circle3').style.height = `${scale * 120}px`;
+        }
+
+        function getCircleScale() {
+            const currentDuration = phaseDurations[phase];
+            const progress = count / currentDuration;
+            
+            if (phase === 'inhale') {
+                return 0.5 + (progress * 0.5);
+            } else if (phase === 'exhale') {
+                return 1 - (progress * 0.5);
+            } else {
+                return phase === 'hold' ? 1 : 0.5;
+            }
+        }
+
+        function toggleActive() {
+            isActive = !isActive;
+            
+            if (isActive) {
+                document.getElementById('playIcon').textContent = '⏸️';
+                document.getElementById('playText').textContent = 'Pause';
+                startTimer();
+            } else {
+                document.getElementById('playIcon').textContent = '▶️';
+                document.getElementById('playText').textContent = 'Start';
+                stopTimer();
+            }
+        }
+
+        function startTimer() {
+            interval = setInterval(() => {
+                const currentDuration = phaseDurations[phase];
+                
+                if (count >= currentDuration) {
+                    vibrate();
+                    
+                    // Move to next phase
+                    switch (phase) {
+                        case 'inhale':
+                            phase = 'hold';
+                            break;
+                        case 'hold':
+                            phase = 'exhale';
+                            break;
+                        case 'exhale':
+                            phase = 'pause';
+                            break;
+                        case 'pause':
+                            phase = 'inhale';
+                            cycles++;
+                            break;
+                    }
+                    
+                    count = 1;
+                } else {
+                    count++;
+                }
+                
+                updateDisplay();
+            }, 1000);
+        }
+
+        function stopTimer() {
+            if (interval) {
+                clearInterval(interval);
+                interval = null;
+            }
+        }
+
+        function resetExercise() {
+            stopTimer();
+            isActive = false;
+            phase = 'inhale';
+            count = 1;
+            cycles = 0;
+            
+            document.getElementById('playIcon').textContent = '▶️';
+            document.getElementById('playText').textContent = 'Start';
+            
+            updateDisplay();
+        }
+
+        function toggleSettings() {
+            const modal = document.getElementById('settingsModal');
+            modal.classList.toggle('hidden');
+        }
+
+        function setPreset(preset) {
+            switch (preset) {
+                case '4-7-8':
+                    phaseDurations = { inhale: 4, hold: 7, exhale: 8, pause: 2 };
+                    break;
+                case '4-2-6-2':
+                    phaseDurations = { inhale: 4, hold: 2, exhale: 6, pause: 2 };
+                    break;
+                case '4-4-4-4':
+                    phaseDurations = { inhale: 4, hold: 4, exhale: 4, pause: 4 };
+                    break;
+            }
+            
+            updateInputs();
+            updateDisplay();
+        }
+
+        function updateDuration(phaseKey, value) {
+            const newValue = Math.max(1, Math.min(30, parseInt(value) || 1));
+            phaseDurations[phaseKey] = newValue;
+            updateDisplay();
+        }
+
+        function updateInputs() {
+            document.getElementById('inhaleInput').value = phaseDurations.inhale;
+            document.getElementById('holdInput').value = phaseDurations.hold;
+            document.getElementById('exhaleInput').value = phaseDurations.exhale;
+            document.getElementById('pauseInput').value = phaseDurations.pause;
+        }
+
+        // Initialize display
+        updateDisplay();
+    </script>
+</body>
+</html>
